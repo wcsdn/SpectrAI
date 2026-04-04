@@ -1,8 +1,8 @@
 # SpectrAI
 
-> Worktree 测试行 - 由 Claude 添加于 2026-03-05，验证 worktree 查看功能
+[![Electron](https://img.shields.io/badge/Electron-28-47848F?logo=electron)](https://www.electronjs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://www.typescriptlang.org/) [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://react.dev/) [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-![Electron](https://img.shields.io/badge/Electron-28-47848F?logo=electron) ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript) ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react) ![License](https://img.shields.io/badge/License-MIT-green)
+**官网 / Website: [https://www.spectraidev.com](https://www.spectraidev.com/)**
 
 **多 AI CLI 会话编排与管控平台**。在一个桌面应用中同时管理多个 AI 会话，提供结构化对话视图、看板式任务管理、实时状态监控、Agent 编排、工作流自动化和远程控制。
 
