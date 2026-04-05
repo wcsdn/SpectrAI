@@ -61,7 +61,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
   fetchSettings: async () => {
     try {
-      const raw = await window.spectrAI.settings.getAll()
+      const raw = await window.spectrAI.settings?.getAll()
       const settings: AppSettings = {
         ...DEFAULT_SETTINGS,
         ...(raw as Partial<AppSettings>),
@@ -77,7 +77,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     // 乐观更新 UI
     set((s) => ({ settings: { ...s.settings, [key]: value } }))
     try {
-      await window.spectrAI.settings.update(key, value)
+      await window.spectrAI.settings?.update(key, value)
     } catch (err) {
       console.warn('[settingsStore] updateSetting error:', err)
       // 回滚
@@ -91,7 +91,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     set((s) => ({ settings: { ...s.settings, ...updates } }))
     try {
       for (const [key, value] of Object.entries(updates)) {
-        await window.spectrAI.settings.update(key, value)
+        await window.spectrAI.settings?.update(key, value)
       }
     } catch (err) {
       console.warn('[settingsStore] updateSettings error:', err)

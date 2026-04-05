@@ -10,7 +10,7 @@ import { execSync } from 'child_process'
 import type { DatabaseManager } from '../storage/Database'
 
 /** MCP 配置目录（Claude Code 用） */
-const MCP_CONFIG_DIR = path.join(os.homedir(), '.claudeops', 'mcp')
+const MCP_CONFIG_DIR = path.join(os.homedir(), '.spectrai', 'mcp')
 
 /** Codex 临时 CODEX_HOME 目录基础路径 */
 const CODEX_TEMP_BASE_DIR = path.join(os.tmpdir(), 'spectrai-codex')

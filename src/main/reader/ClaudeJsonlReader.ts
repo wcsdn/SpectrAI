@@ -87,7 +87,7 @@ export class ClaudeJsonlReader extends BaseOutputReader {
   /** 文件轮询间隔（fs.watch 失败时的备用） */
   private readonly POLL_INTERVAL = 2000
   /** Claude 项目目录基路径 */
-  private readonly claudeProjectsDir = path.join(os.homedir(), '.claude', 'projects')
+  private readonly claudeProjectsDir = path.join(os.homedir(), '.spectrai', 'projects')
 
   // ---- 公共接口 ----
 

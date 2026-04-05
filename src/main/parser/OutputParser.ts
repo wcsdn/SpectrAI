@@ -76,7 +76,7 @@ export class OutputParser extends EventEmitter {
     this.usageEstimator = new UsageEstimator()
 
     // 自定义规则文件路径
-    this.customRulesPath = path.join(os.homedir(), '.claudeops', 'custom-rules.json')
+    this.customRulesPath = path.join(os.homedir(), '.spectrai', 'custom-rules.json')
 
     // 合并内置规则和自定义规则，按优先级排序
     const customRules = this.loadCustomRules()

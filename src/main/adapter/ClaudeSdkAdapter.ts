@@ -11,6 +11,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import * as fs from 'fs'
 import * as path from 'path'
+import * as os from 'os'
 import { execSync } from 'child_process'
 import type { ConversationMessage } from '../../shared/types'
 import {
@@ -986,6 +987,15 @@ export class ClaudeSdkAdapter extends BaseProviderAdapter {
     delete cleanEnv.CLAUDECODE
     delete cleanEnv.CLAUDE_CODE_ENTRYPOINT
     cleanEnv.PATH = this.ensureNodeInPath(cleanEnv.PATH || '')
+    
+    // ★ 设置 SpectrAI 自己的配置目录，不使用系统 Claude 的配置
+    const spectraiHome = path.join(os.homedir(), '.spectrai')
+    if (!fs.existsSync(spectraiHome)) {
+      fs.mkdirSync(spectraiHome, { recursive: true })
+    }
+    cleanEnv.CLAUDE_HOME = spectraiHome
+    logger.info(`[ClaudeSdkAdapter] Using SpectrAI config directory: ${spectraiHome}`)
+    
     const mergedEnv = prependNodeVersionToEnvPath(cleanEnv, config.nodeVersion)
     this.ensureGitBashInEnv(mergedEnv, config.gitBashPath)
     const proxyEnv = this.getProxyEnv()

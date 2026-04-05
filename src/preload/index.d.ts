@@ -13,6 +13,11 @@ export interface SpectrAIAPI {
     updateTitleBar: (themeId: string) => void
   }
 
+  settings: {
+    getAll: () => Promise<any>
+    update: (key: string, value: any) => Promise<void>
+  }
+
   update: {
     getState: () => Promise<{
       status: 'idle' | 'checking' | 'available' | 'not-available' | 'downloading' | 'downloaded' | 'error'
@@ -93,6 +98,7 @@ export interface SpectrAIAPI {
     onConversationMessage?: (callback: (sessionId: string, msg: any) => void) => () => void
     onInitData?: (callback: (sessionId: string, data: any) => void) => () => void
     onTokenUpdate?: (callback: (sessionId: string, usage: any) => void) => () => void
+    onRefresh?: (callback: () => void) => () => void
   }
 
   task: {

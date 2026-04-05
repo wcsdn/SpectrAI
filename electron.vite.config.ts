@@ -40,6 +40,9 @@ export default defineConfig({
     plugins: [react()],
     css: {
       postcss: resolve(__dirname, 'postcss.config.js')
+    },
+    server: {
+      port: 5174
     }
   }
 })

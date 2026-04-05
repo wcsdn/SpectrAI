@@ -82,6 +82,14 @@ export class SessionManager extends EventEmitter {
     delete env.CLAUDECODE;
     delete env.CLAUDE_CODE_ENTRYPOINT;
 
+    // ★ 设置 SpectrAI 自己的配置目录，不使用系统 Claude 的配置
+    const spectraiHome = path.join(os.homedir(), '.spectrai');
+    if (!fs.existsSync(spectraiHome)) {
+      fs.mkdirSync(spectraiHome, { recursive: true });
+    }
+    env.CLAUDE_HOME = spectraiHome;
+    console.log(`[SessionManager] Using SpectrAI config directory: ${spectraiHome}`);
+
     // Provider 级别 Node 版本切换：修改 PATH 指向指定 nvm 版本目录
     if (resolvedProvider.nodeVersion) {
       const nvmNodeDir = SessionManager.resolveNvmNodeDir(resolvedProvider.nodeVersion);
@@ -605,15 +613,18 @@ export class SessionManager extends EventEmitter {
   /**
    * 检测 Claude Code 内部会话 ID
    * 用"快照对比"法：启动前记录已有 .jsonl 文件，之后找新增的文件
-   * ★ 只扫描 cwd 对应的项目目录（Claude Code 按项目路径隔离会话）
+   * ★ 使用 SpectrAI 自己的项目目录，不读取系统 Claude 的数据
    */
   private detectClaudeSessionId(sessionId: string, cwd: string): void {
-    const claudeProjectsDir = path.join(os.homedir(), '.claude', 'projects');
-    if (!fs.existsSync(claudeProjectsDir)) return;
+    // ★ 使用 SpectrAI 自己的配置目录
+    const spectraiProjectsDir = path.join(os.homedir(), '.spectrai', 'projects');
+    if (!fs.existsSync(spectraiProjectsDir)) {
+      fs.mkdirSync(spectraiProjectsDir, { recursive: true });
+    }
 
-    // 将工作目录映射到 Claude 的项目目录（与 ClaudeJsonlReader.computeProjectHash 一致）
+    // 将工作目录映射到 SpectrAI 的项目目录
     const projectHash = cwd.replace(/[\\/]+$/, '').replace(/[^a-zA-Z0-9]/g, '-');
-    const projectDir = path.join(claudeProjectsDir, projectHash);
+    const projectDir = path.join(spectraiProjectsDir, projectHash);
 
     // 启动前拍快照：只记录本项目目录中的 .jsonl 文件
     const existingFiles = new Set(this.getJsonlFilesInDir(projectDir));

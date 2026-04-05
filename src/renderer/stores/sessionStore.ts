@@ -655,9 +655,12 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     }))
 
     // 监听外部变更（远程创建/终止会话）
-    _sessionListenerUnsubs.push(window.spectrAI.session.onRefresh(() => {
+    const refreshUnsub = window.spectrAI.session.onRefresh?.(() => {
       get().fetchSessions()
-    }))
+    })
+    if (refreshUnsub) {
+      _sessionListenerUnsubs.push(refreshUnsub)
+    }
 
     // ★ SDK V2: 实时 token 用量推送（每轮对话结束后触发）
     const tokenUnsub = window.spectrAI.session.onTokenUpdate?.((sessionId: string, usage: { inputTokens: number; outputTokens: number; total: number }) => {
@@ -721,7 +724,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     _conversationListenerUnsubs.forEach(fn => fn())
     _conversationListenerUnsubs = []
 
-    _conversationListenerUnsubs.push(window.spectrAI.session.onConversationMessage(
+    const conversationUnsub = window.spectrAI.session.onConversationMessage?.(
       (sessionId: string, msg: ConversationMessage) => {
         // Skill 静默执行时，SDK 会回显用户发送的模板文本，此处将其拦截
         // 合成的 "▶ /skillname" 消息已由 sendSkillMessage 提前加入对话，无需 SDK 回显
@@ -735,14 +738,20 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         }
         get().addConversationMessage(sessionId, msg)
       }
-    ))
+    )
+    if (conversationUnsub) {
+      _conversationListenerUnsubs.push(conversationUnsub)
+    }
 
     // 监听会话初始化数据（tools/skills/mcp）
-    _conversationListenerUnsubs.push(window.spectrAI.session.onInitData(
+    const initDataUnsub = window.spectrAI.session.onInitData?.(
       (sessionId: string, data: any) => {
         get().setSessionInitData(sessionId, data)
       }
-    ))
+    )
+    if (initDataUnsub) {
+      _conversationListenerUnsubs.push(initDataUnsub)
+    }
   },
 
   // 清理所有 IPC 监听器（防泄漏，可在组件卸载 / HMR 时调用）
@@ -758,7 +767,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   // SDK V2: 发送结构化消息
   sendMessage: async (sessionId: string, text: string) => {
     try {
-      await window.spectrAI.session.sendMessage(sessionId, text)
+      await window.spectrAI.session.sendMessage?.(sessionId, text)
     } catch (error) {
       console.error('Failed to send message:', error)
       throw error
@@ -781,7 +790,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
     // ③ 发送展开后的模板
     try {
-      await window.spectrAI.session.sendMessage(sessionId, expandedTemplate)
+      await window.spectrAI.session.sendMessage?.(sessionId, expandedTemplate)
     } catch (error) {
       // 发送失败时撤销标记，避免屏蔽后续正常消息
       set(state => {
