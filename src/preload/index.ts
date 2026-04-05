@@ -205,6 +205,13 @@ contextBridge.exposeInMainWorld('spectrAI', {
       }
       ipcRenderer.on(IPC.SESSION_TOKEN_UPDATE, listener)
       return () => ipcRenderer.removeListener(IPC.SESSION_TOKEN_UPDATE, listener)
+    },
+
+    // 监听会话列表刷新事件（远程创建/终止会话时触发）
+    onRefresh: (callback: () => void) => {
+      const listener = () => callback()
+      ipcRenderer.on(IPC.SESSION_REFRESH, listener)
+      return () => ipcRenderer.removeListener(IPC.SESSION_REFRESH, listener)
     }
   },
 
